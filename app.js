@@ -56,40 +56,40 @@
       A: A, B: B, V: V, G: G, K: K,
       S: S, T: T, P: P, Rp: Rp,
 
-      // Left horizontal (y=500)
-      A1: { x: 180, y: 500 },
-      A2: { x: 244, y: 500 },
-      A3: { x: 374, y: 500 },
+      // Left horizontal — pixel cluster detection
+      A1: { x: 196, y: 500 },
+      A2: { x: 269, y: 500 },
+      A3: { x: 391, y: 500 },
 
-      // Top vertical (x=500) — from color detection: 31%, 42%, 74% from B
-      B1: { x: 500, y: 224 },
-      B2: { x: 500, y: 268 },
-      B3: { x: 500, y: 396 },
+      // Top vertical — pixel cluster detection
+      B1: { x: 500, y: 197 },
+      B2: { x: 500, y: 283 },
+      B3: { x: 500, y: 401 },
 
-      // Right horizontal (y=500)
-      Z2p: { x: 560, y: 500 },
-      Z1p: { x: 612, y: 500 },
-      V2: { x: 678, y: 500 },
-      V1: { x: 792, y: 500 },
+      // Right horizontal — pixel cluster detection
+      Z2p: { x: 588, y: 500 },
+      Z1p: { x: 654, y: 500 },
+      V2: { x: 744, y: 500 },
+      V1: { x: 818, y: 500 },
 
-      // Diagonals (lerp from corner toward center K)
-      S1: lerpPt(S, K, 0.31),
-      S2: lerpPt(S, K, 0.52),
-      T1: lerpPt(T, K, 0.31),
-      T2: lerpPt(T, K, 0.52),
-      P1: lerpPt(P, K, 0.31),
-      P2: lerpPt(P, K, 0.52),
-      R1: lerpPt(Rp, K, 0.31),
-      R2: lerpPt(Rp, K, 0.52),
+      // Diagonals — 21% and 38% from corner (cluster detection)
+      S1: lerpPt(S, K, 0.21),
+      S2: lerpPt(S, K, 0.38),
+      T1: lerpPt(T, K, 0.21),
+      T2: lerpPt(T, K, 0.38),
+      P1: lerpPt(P, K, 0.21),
+      P2: lerpPt(P, K, 0.38),
+      R1: lerpPt(Rp, K, 0.21),
+      R2: lerpPt(Rp, K, 0.38),
 
-      // Bottom vertical (x=500) — from color detection: 55%, 67% from K
-      Zh: { x: 500, y: 720 },
-      Z: { x: 500, y: 768 },
+      // Bottom vertical — pixel cluster detection
+      Zh: { x: 500, y: 752 },
+      Z: { x: 500, y: 826 },
 
-      // Center cluster (very tight, nearly touching)
-      D: { x: 526, y: 525 },
+      // Center cluster
+      D: { x: 527, y: 526 },
       M: { x: 517, y: 549 },
-      I: { x: 507, y: 576 }
+      I: { x: 508, y: 576 }
     };
   }
 
@@ -225,6 +225,16 @@
     // Diagonal cross (S-P, T-Rp): opacity 0.18, width 1
     s += ln(p.S.x, p.S.y, p.P.x, p.P.y, 0.18, 1);
     s += ln(p.T.x, p.T.y, p.Rp.x, p.Rp.y, 0.18, 1);
+    // Inner diamond (connecting 1st intermediates): opacity 0.18, width 1
+    s += ln(p.S1.x, p.S1.y, p.T1.x, p.T1.y, 0.18, 1);
+    s += ln(p.T1.x, p.T1.y, p.P1.x, p.P1.y, 0.18, 1);
+    s += ln(p.P1.x, p.P1.y, p.R1.x, p.R1.y, 0.18, 1);
+    s += ln(p.R1.x, p.R1.y, p.S1.x, p.S1.y, 0.18, 1);
+    // Inner square (connecting 2nd intermediates): opacity 0.15, width 1
+    s += ln(p.S2.x, p.S2.y, p.T2.x, p.T2.y, 0.15, 1);
+    s += ln(p.T2.x, p.T2.y, p.P2.x, p.P2.y, 0.15, 1);
+    s += ln(p.P2.x, p.P2.y, p.R2.x, p.R2.y, 0.15, 1);
+    s += ln(p.R2.x, p.R2.y, p.S2.x, p.S2.y, 0.15, 1);
     // Center cluster connections: opacity 0.12, width 0.6
     s += ln(p.D.x, p.D.y, p.M.x, p.M.y, 0.12, 0.6);
     s += ln(p.M.x, p.M.y, p.I.x, p.I.y, 0.12, 0.6);
