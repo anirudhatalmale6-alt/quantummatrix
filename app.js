@@ -56,23 +56,23 @@
       A: A, B: B, V: V, G: G, K: K,
       S: S, T: T, P: P, Rp: Rp,
 
-      // Left horizontal — pixel cluster detection
-      A1: { x: 196, y: 500 },
-      A2: { x: 269, y: 500 },
-      A3: { x: 391, y: 500 },
+      // Left horizontal
+      A1: { x: 183, y: 500 },
+      A2: { x: 252, y: 500 },
+      A3: { x: 383, y: 500 },
 
-      // Top vertical — pixel cluster detection
-      B1: { x: 500, y: 197 },
-      B2: { x: 500, y: 283 },
-      B3: { x: 500, y: 401 },
+      // Top vertical — even spacing between chakra circles
+      B1: { x: 500, y: 200 },
+      B2: { x: 500, y: 290 },
+      B3: { x: 500, y: 393 },
 
-      // Right horizontal — pixel cluster detection
-      Z2p: { x: 588, y: 500 },
-      Z1p: { x: 654, y: 500 },
-      V2: { x: 744, y: 500 },
-      V1: { x: 818, y: 500 },
+      // Right horizontal
+      Z2p: { x: 565, y: 500 },
+      Z1p: { x: 618, y: 500 },
+      V2: { x: 685, y: 500 },
+      V1: { x: 808, y: 500 },
 
-      // Diagonals — 21% and 38% from corner (cluster detection)
+      // Diagonals — 21% and 38% from corner
       S1: lerpPt(S, K, 0.21),
       S2: lerpPt(S, K, 0.38),
       T1: lerpPt(T, K, 0.21),
@@ -82,14 +82,14 @@
       R1: lerpPt(Rp, K, 0.21),
       R2: lerpPt(Rp, K, 0.38),
 
-      // Bottom vertical — pixel cluster detection
-      Zh: { x: 500, y: 752 },
-      Z: { x: 500, y: 826 },
+      // Bottom vertical — Zh/Z closer to center cluster
+      Zh: { x: 500, y: 660 },
+      Z: { x: 500, y: 705 },
 
-      // Center cluster
-      D: { x: 527, y: 526 },
-      M: { x: 517, y: 549 },
-      I: { x: 508, y: 576 }
+      // Center cluster — nearly on vertical center line
+      D: { x: 512, y: 524 },
+      M: { x: 506, y: 548 },
+      I: { x: 502, y: 574 }
     };
   }
 
@@ -311,8 +311,8 @@
     s += chakraCircle(p.B2.x, p.B2.y, data.B2, 20, "cyan", 13);
     s += chakraCircle(p.B1.x, p.B1.y, data.B1, 20, "blue", 13);
 
-    // Right horizontal: V1 (r=16, gold), V2 (r=20, orange)
-    s += goldCircle(p.V1.x, p.V1.y, data.V1, 16, 10);
+    // Right horizontal: V1 (r=16, blue — mirrors A1), V2 (r=20, orange)
+    s += chakraCircle(p.V1.x, p.V1.y, data.V1, 16, "blue", 11);
     s += chakraCircle(p.V2.x, p.V2.y, data.V2, 20, "orange", 13);
 
     // Bottom vertical: Z (r=20, orange), Zh (r=20, orange)
