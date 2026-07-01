@@ -455,6 +455,25 @@
     return s;
   }
 
+  function injectSilhouette() {
+    var container = document.querySelector(".matrix-container");
+    if (!container || container.querySelector(".matrix-silhouette-wrap")) return;
+    var wrap = document.createElement("div");
+    wrap.className = "matrix-silhouette-wrap";
+    wrap.style.cssText = "position:absolute;inset:0;display:flex;justify-content:center;align-items:center;pointer-events:none;z-index:0;";
+    var img = document.createElement("img");
+    img.className = "matrix-silhouette";
+    img.src = "avatar_demo.svg";
+    img.alt = "";
+    img.style.cssText = "height:82%;margin-top:-2%;opacity:0.07;filter:brightness(1.8) contrast(0.8);";
+    wrap.appendChild(img);
+    container.insertBefore(wrap, container.firstChild);
+    var svg = container.querySelector("svg");
+    if (svg) { svg.style.position = "relative"; svg.style.zIndex = "1"; }
+    container.style.position = "relative";
+    container.style.overflow = "hidden";
+  }
+
   function renderMatrix(data) {
     var svg = document.getElementById("matrixSvg");
     var p = getPositions();
@@ -468,6 +487,7 @@
     content += svgDecorations();
 
     svg.innerHTML = content;
+    injectSilhouette();
   }
 
   function updatePurpose(d) {
