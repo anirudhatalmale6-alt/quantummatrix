@@ -3,7 +3,6 @@
 
   var CX = 500, CY = 500, R = 400;
 
-  // ── Helpers ──
   function reduce(n) {
     n = Math.abs(Math.round(n));
     while (n > 22) { var s = 0, t = n; while (t > 0) { s += t % 10; t = Math.floor(t / 10); } n = s; }
@@ -40,7 +39,6 @@
   function lerp(a, b, t) { return a + (b - a) * t; }
   function lerpPt(a, b, t) { return { x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t) }; }
 
-  // ── Exact Position Map ──
   function getPositions() {
     var A = { x: 100, y: 500 };
     var B = { x: 500, y: 100 };
@@ -56,54 +54,50 @@
       A: A, B: B, V: V, G: G, K: K,
       S: S, T: T, P: P, Rp: Rp,
 
-      // Left horizontal — from reference app CSS
-      A1: { x: 192, y: 500 },
-      A2: { x: 243, y: 500 },
-      A3: { x: 372, y: 500 },
+      // Left horizontal (A→K) — ratios from reference app CSS
+      A1: { x: lerp(100, 500, 0.236), y: 500 },
+      A2: { x: lerp(100, 500, 0.414), y: 500 },
+      A3: { x: lerp(100, 500, 0.717), y: 500 },
 
-      // Top vertical
-      B1: { x: 500, y: 200 },
-      B2: { x: 500, y: 290 },
-      B3: { x: 500, y: 400 },
+      // Top vertical (B→K) — mirrored horizontal ratios
+      B1: { x: 500, y: lerp(100, 500, 0.236) },
+      B2: { x: 500, y: lerp(100, 500, 0.414) },
+      B3: { x: 500, y: lerp(100, 500, 0.717) },
 
-      // Right horizontal — from reference, only 2 intermediates + V2 + V1
-      Z2p: { x: 560, y: 500 },
-      Z1p: { x: 616, y: 500 },
-      V2: { x: 736, y: 500 },
-      V1: { x: 808, y: 500 },
+      // Right horizontal (K→V) — from reference app CSS
+      Z2p: { x: lerp(500, 900, 0.203), y: 500 },
+      Z1p: { x: lerp(500, 900, 0.365), y: 500 },
+      V2:  { x: lerp(500, 900, 0.591), y: 500 },
+      V1:  { x: lerp(500, 900, 0.777), y: 500 },
 
-      // Diagonals — 21% and 38% from corner
-      S1: lerpPt(S, K, 0.21),
-      S2: lerpPt(S, K, 0.38),
-      T1: lerpPt(T, K, 0.21),
-      T2: lerpPt(T, K, 0.38),
-      P1: lerpPt(P, K, 0.21),
-      P2: lerpPt(P, K, 0.38),
-      R1: lerpPt(Rp, K, 0.21),
-      R2: lerpPt(Rp, K, 0.38),
+      // Bottom vertical (K→G)
+      Zh: { x: 500, y: lerp(500, 900, 0.50) },
+      Z:  { x: 500, y: lerp(500, 900, 0.65) },
 
-      // Bottom vertical
-      Zh: { x: 500, y: 660 },
-      Z: { x: 500, y: 710 },
+      // Diagonals — S2 closer to corner (27%), S1 closer to K (42%)
+      S2: lerpPt(S, K, 0.27),
+      S1: lerpPt(S, K, 0.42),
+      T2: lerpPt(T, K, 0.27),
+      T1: lerpPt(T, K, 0.42),
+      P2: lerpPt(P, K, 0.27),
+      P1: lerpPt(P, K, 0.42),
+      R2: lerpPt(Rp, K, 0.27),
+      R1: lerpPt(Rp, K, 0.42),
 
-      // Center cluster — on CURVED path from horizontal-right toward vertical-down
-      // D is most to the right (near horizontal), I is most vertical, M at 45 degrees
-      D: { x: 530, y: 512 },
-      M: { x: 536, y: 538 },
-      I: { x: 524, y: 568 }
+      // Center cluster — arc from K→V direction curving to K→G direction
+      D: { x: 590, y: 540 },
+      M: { x: 556, y: 572 },
+      I: { x: 525, y: 608 }
     };
   }
 
-  // ── Pulsating energy positions ──
   function pulsatingPositions(p) {
     var pts = [];
-    // A→S edge: 4 points at 20/40/60/80%
     var asNames = ["F", "Ya", "E", "Kh"];
     var asPercents = [0.20, 0.40, 0.60, 0.80];
     for (var i = 0; i < asNames.length; i++) {
       pts.push({ key: asNames[i], x: lerp(p.A.x, p.S.x, asPercents[i]), y: lerp(p.A.y, p.S.y, asPercents[i]) });
     }
-    // S→B edge: 3 points at 25/50/75%
     var sbNames = ["Yu", "Ts", "Sh"];
     var sbPercents = [0.25, 0.50, 0.75];
     for (var j = 0; j < sbNames.length; j++) {
@@ -112,7 +106,6 @@
     return pts;
   }
 
-  // ── Color mixing helper ──
   function hexToRgb(hex) {
     var r = parseInt(hex.slice(1, 3), 16);
     var g = parseInt(hex.slice(3, 5), 16);
@@ -126,25 +119,19 @@
 
   function lighten(hex, pct) {
     var c = hexToRgb(hex);
-    return rgbToHex(
-      c[0] + (255 - c[0]) * pct,
-      c[1] + (255 - c[1]) * pct,
-      c[2] + (255 - c[2]) * pct
-    );
+    return rgbToHex(c[0] + (255 - c[0]) * pct, c[1] + (255 - c[1]) * pct, c[2] + (255 - c[2]) * pct);
   }
 
-  // ── SVG <defs> — gradients + filters ──
   function svgDefs() {
     var GOLD = "#c9a96a";
     var s = '<defs>';
 
-    // Central radial glow behind K
     s += '<radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">';
-    s += '<stop offset="0%" stop-color="#f1c40f" stop-opacity="0.20"/>';
+    s += '<stop offset="0%" stop-color="#f1c40f" stop-opacity="0.25"/>';
+    s += '<stop offset="60%" stop-color="#f1c40f" stop-opacity="0.08"/>';
     s += '<stop offset="100%" stop-color="#f1c40f" stop-opacity="0"/>';
     s += '</radialGradient>';
 
-    // Chakra color definitions
     var chakraColors = [
       ["purple", "#9b59b6"],
       ["blue", "#2980b9"],
@@ -158,27 +145,25 @@
     for (var i = 0; i < chakraColors.length; i++) {
       var name = chakraColors[i][0];
       var color = chakraColors[i][1];
-      var light = lighten(color, 0.30);
+      var light = lighten(color, 0.35);
 
-      // Radial gradient: lighter center → full color at edge
-      s += '<radialGradient id="grad_' + name + '" cx="50%" cy="50%" r="50%">';
-      s += '<stop offset="0%" stop-color="' + light + '"/>';
+      s += '<radialGradient id="grad_' + name + '" cx="40%" cy="40%" r="60%">';
+      s += '<stop offset="0%" stop-color="' + lighten(color, 0.5) + '"/>';
+      s += '<stop offset="50%" stop-color="' + light + '"/>';
       s += '<stop offset="100%" stop-color="' + color + '"/>';
       s += '</radialGradient>';
 
-      // Glow filter: feGaussianBlur stdDeviation=5, colored, 40% opacity
       s += '<filter id="glow_' + name + '" x="-80%" y="-80%" width="260%" height="260%">';
-      s += '<feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>';
-      s += '<feFlood flood-color="' + color + '" flood-opacity="0.4"/>';
+      s += '<feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>';
+      s += '<feFlood flood-color="' + color + '" flood-opacity="0.5"/>';
       s += '<feComposite in2="blur" operator="in" result="colorBlur"/>';
       s += '<feMerge><feMergeNode in="colorBlur"/><feMergeNode in="SourceGraphic"/></feMerge>';
       s += '</filter>';
     }
 
-    // Gold glow for non-colored circles (subtle)
-    s += '<filter id="glow_gold" x="-50%" y="-50%" width="200%" height="200%">';
-    s += '<feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>';
-    s += '<feFlood flood-color="' + GOLD + '" flood-opacity="0.15"/>';
+    s += '<filter id="glow_gold" x="-60%" y="-60%" width="220%" height="220%">';
+    s += '<feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>';
+    s += '<feFlood flood-color="' + GOLD + '" flood-opacity="0.2"/>';
     s += '<feComposite in2="blur" operator="in" result="colorBlur"/>';
     s += '<feMerge><feMergeNode in="colorBlur"/><feMergeNode in="SourceGraphic"/></feMerge>';
     s += '</filter>';
@@ -187,212 +172,175 @@
     return s;
   }
 
-  // ── Background elements ──
   function svgBackground() {
     var s = '';
-    // Dashed circle at R+25
-    s += '<circle cx="' + CX + '" cy="' + CY + '" r="' + (R + 25) + '" fill="none" stroke="#c9a96a" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="8 5"/>';
-    // Radial glow behind K, radius 90
-    s += '<circle cx="' + CX + '" cy="' + CY + '" r="90" fill="url(#centerGlow)"/>';
+    s += '<circle cx="' + CX + '" cy="' + CY + '" r="' + (R + 25) + '" fill="none" stroke="#c9a96a" stroke-opacity="0.25" stroke-width="1.5" stroke-dasharray="6 4"/>';
+    s += '<circle cx="' + CX + '" cy="' + CY + '" r="110" fill="url(#centerGlow)"/>';
     return s;
   }
 
-  // ── Line helper ──
   function ln(x1, y1, x2, y2, opacity, width) {
     return '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="#c9a96a" stroke-opacity="' + opacity + '" stroke-width="' + width + '"/>';
   }
 
-  // ── All structural lines ──
   function svgLines(p) {
     var s = '';
-    // Octagon edges: gold, opacity 0.35, width 2
     var oct = [p.A, p.S, p.B, p.T, p.V, p.P, p.G, p.Rp];
     for (var i = 0; i < 8; i++) {
-      s += ln(oct[i].x, oct[i].y, oct[(i + 1) % 8].x, oct[(i + 1) % 8].y, 0.35, 2);
+      s += ln(oct[i].x, oct[i].y, oct[(i + 1) % 8].x, oct[(i + 1) % 8].y, 0.45, 2.2);
     }
-    // Diamond edges (A-B, B-V, V-G, G-A): opacity 0.25, width 1.5
-    s += ln(p.A.x, p.A.y, p.B.x, p.B.y, 0.25, 1.5);
-    s += ln(p.B.x, p.B.y, p.V.x, p.V.y, 0.25, 1.5);
-    s += ln(p.V.x, p.V.y, p.G.x, p.G.y, 0.25, 1.5);
-    s += ln(p.G.x, p.G.y, p.A.x, p.A.y, 0.25, 1.5);
-    // Straight square edges (S-T, T-P, P-Rp, Rp-S): opacity 0.22, width 1.5
-    s += ln(p.S.x, p.S.y, p.T.x, p.T.y, 0.22, 1.5);
-    s += ln(p.T.x, p.T.y, p.P.x, p.P.y, 0.22, 1.5);
-    s += ln(p.P.x, p.P.y, p.Rp.x, p.Rp.y, 0.22, 1.5);
-    s += ln(p.Rp.x, p.Rp.y, p.S.x, p.S.y, 0.22, 1.5);
-    // Cross lines (A-V horizontal, B-G vertical): opacity 0.25, width 1.2
-    s += ln(p.A.x, p.A.y, p.V.x, p.V.y, 0.25, 1.2);
-    s += ln(p.B.x, p.B.y, p.G.x, p.G.y, 0.25, 1.2);
-    // Diagonal cross (S-P, T-Rp): opacity 0.18, width 1
-    s += ln(p.S.x, p.S.y, p.P.x, p.P.y, 0.18, 1);
-    s += ln(p.T.x, p.T.y, p.Rp.x, p.Rp.y, 0.18, 1);
-    // Inner diamond (connecting 1st intermediates): opacity 0.18, width 1
-    s += ln(p.S1.x, p.S1.y, p.T1.x, p.T1.y, 0.18, 1);
-    s += ln(p.T1.x, p.T1.y, p.P1.x, p.P1.y, 0.18, 1);
-    s += ln(p.P1.x, p.P1.y, p.R1.x, p.R1.y, 0.18, 1);
-    s += ln(p.R1.x, p.R1.y, p.S1.x, p.S1.y, 0.18, 1);
-    // Inner square (connecting 2nd intermediates): opacity 0.15, width 1
-    s += ln(p.S2.x, p.S2.y, p.T2.x, p.T2.y, 0.15, 1);
-    s += ln(p.T2.x, p.T2.y, p.P2.x, p.P2.y, 0.15, 1);
-    s += ln(p.P2.x, p.P2.y, p.R2.x, p.R2.y, 0.15, 1);
-    s += ln(p.R2.x, p.R2.y, p.S2.x, p.S2.y, 0.15, 1);
-    // Center cluster diagonal curve and connections
-    s += ln(p.D.x, p.D.y, p.M.x, p.M.y, 0.15, 0.8);
-    s += ln(p.M.x, p.M.y, p.I.x, p.I.y, 0.15, 0.8);
-    s += ln(p.I.x, p.I.y, p.Zh.x, p.Zh.y, 0.12, 0.7);
+    s += ln(p.A.x, p.A.y, p.B.x, p.B.y, 0.32, 1.8);
+    s += ln(p.B.x, p.B.y, p.V.x, p.V.y, 0.32, 1.8);
+    s += ln(p.V.x, p.V.y, p.G.x, p.G.y, 0.32, 1.8);
+    s += ln(p.G.x, p.G.y, p.A.x, p.A.y, 0.32, 1.8);
+    s += ln(p.S.x, p.S.y, p.T.x, p.T.y, 0.28, 1.6);
+    s += ln(p.T.x, p.T.y, p.P.x, p.P.y, 0.28, 1.6);
+    s += ln(p.P.x, p.P.y, p.Rp.x, p.Rp.y, 0.28, 1.6);
+    s += ln(p.Rp.x, p.Rp.y, p.S.x, p.S.y, 0.28, 1.6);
+    s += ln(p.A.x, p.A.y, p.V.x, p.V.y, 0.30, 1.4);
+    s += ln(p.B.x, p.B.y, p.G.x, p.G.y, 0.30, 1.4);
+    s += ln(p.S.x, p.S.y, p.P.x, p.P.y, 0.22, 1.2);
+    s += ln(p.T.x, p.T.y, p.Rp.x, p.Rp.y, 0.22, 1.2);
+    // Inner square (S2-T2-P2-R2, closer to corners = larger shape)
+    s += ln(p.S2.x, p.S2.y, p.T2.x, p.T2.y, 0.22, 1.2);
+    s += ln(p.T2.x, p.T2.y, p.P2.x, p.P2.y, 0.22, 1.2);
+    s += ln(p.P2.x, p.P2.y, p.R2.x, p.R2.y, 0.22, 1.2);
+    s += ln(p.R2.x, p.R2.y, p.S2.x, p.S2.y, 0.22, 1.2);
+    // Inner diamond (S1-T1-P1-R1, closer to K = smaller shape)
+    s += ln(p.S1.x, p.S1.y, p.T1.x, p.T1.y, 0.20, 1.0);
+    s += ln(p.T1.x, p.T1.y, p.P1.x, p.P1.y, 0.20, 1.0);
+    s += ln(p.P1.x, p.P1.y, p.R1.x, p.R1.y, 0.20, 1.0);
+    s += ln(p.R1.x, p.R1.y, p.S1.x, p.S1.y, 0.20, 1.0);
+    // Center cluster connections
+    s += ln(p.K.x, p.K.y, p.D.x, p.D.y, 0.15, 0.8);
+    s += ln(p.D.x, p.D.y, p.M.x, p.M.y, 0.18, 0.8);
+    s += ln(p.M.x, p.M.y, p.I.x, p.I.y, 0.18, 0.8);
+    s += ln(p.I.x, p.I.y, p.Zh.x, p.Zh.y, 0.15, 0.7);
+    s += ln(p.D.x, p.D.y, p.V2.x, p.V2.y, 0.12, 0.6);
     s += ln(p.M.x, p.M.y, p.Zh.x, p.Zh.y, 0.10, 0.5);
-    s += ln(p.D.x, p.D.y, p.V2.x, p.V2.y, 0.10, 0.5);
-    s += ln(p.M.x, p.M.y, p.V2.x, p.V2.y, 0.08, 0.5);
     return s;
   }
 
-  // ── Chakra-colored circle (gradient fill + glow) ──
   function chakraCircle(x, y, value, radius, colorName, fontSize) {
-    var sw = (radius >= 36) ? 2.5 : (radius >= 28 ? 2 : 1.5);
+    var sw = (radius >= 38) ? 2.5 : (radius >= 28 ? 2 : 1.5);
     var s = '<g filter="url(#glow_' + colorName + ')">';
-    s += '<circle cx="' + x + '" cy="' + y + '" r="' + radius + '" fill="url(#grad_' + colorName + ')" stroke="rgba(255,255,255,0.15)" stroke-width="' + sw + '"/>';
-    s += '<text x="' + x + '" y="' + y + '" text-anchor="middle" dominant-baseline="central" fill="#fff" font-family="\'Cormorant Garamond\',serif" font-weight="600" font-size="' + fontSize + '">' + value + '</text>';
+    s += '<circle cx="' + x + '" cy="' + y + '" r="' + radius + '" fill="url(#grad_' + colorName + ')" stroke="rgba(255,255,255,0.2)" stroke-width="' + sw + '"/>';
+    s += '<text x="' + x + '" y="' + y + '" text-anchor="middle" dominant-baseline="central" fill="#fff" font-family="\'Cormorant Garamond\',serif" font-weight="700" font-size="' + fontSize + '" style="text-shadow:0 1px 3px rgba(0,0,0,0.5)">' + value + '</text>';
     s += '</g>';
     return s;
   }
 
-  // ── Plain gold-stroke circle (dark fill) ──
   function goldCircle(x, y, value, radius, fontSize) {
-    var sw = (radius >= 28) ? 1.8 : (radius >= 14 ? 1 : 0.8);
-    var s = '<g>';
-    s += '<circle cx="' + x + '" cy="' + y + '" r="' + radius + '" fill="#131211" stroke="#c9a96a" stroke-width="' + sw + '"/>';
-    s += '<text x="' + x + '" y="' + y + '" text-anchor="middle" dominant-baseline="central" fill="#d4af37" font-family="\'Cormorant Garamond\',serif" font-weight="600" font-size="' + fontSize + '">' + value + '</text>';
+    var sw = (radius >= 28) ? 1.8 : (radius >= 16 ? 1.2 : 1.0);
+    var s = '<g filter="url(#glow_gold)">';
+    s += '<circle cx="' + x + '" cy="' + y + '" r="' + radius + '" fill="#151413" stroke="#c9a96a" stroke-width="' + sw + '"/>';
+    s += '<text x="' + x + '" y="' + y + '" text-anchor="middle" dominant-baseline="central" fill="#d4af37" font-family="\'Cormorant Garamond\',serif" font-weight="700" font-size="' + fontSize + '">' + value + '</text>';
     s += '</g>';
     return s;
   }
 
-  // ── Pulsating energy circle (small, with subtle glow animation would be CSS) ──
   function pulseCircle(x, y, value) {
     var s = '<g>';
-    s += '<circle cx="' + x + '" cy="' + y + '" r="10" fill="#131211" stroke="#c9a96a" stroke-width="0.8"/>';
-    s += '<text x="' + x + '" y="' + y + '" text-anchor="middle" dominant-baseline="central" fill="#d4af37" font-family="\'Cormorant Garamond\',serif" font-weight="600" font-size="8">' + value + '</text>';
+    s += '<circle cx="' + x + '" cy="' + y + '" r="11" fill="#131211" stroke="#c9a96a" stroke-width="0.8" stroke-opacity="0.6"/>';
+    s += '<text x="' + x + '" y="' + y + '" text-anchor="middle" dominant-baseline="central" fill="#d4af37" font-family="\'Cormorant Garamond\',serif" font-weight="600" font-size="9" opacity="0.8">' + value + '</text>';
     s += '</g>';
     return s;
   }
 
-  // ── All circle nodes ──
   function svgCircles(data, p) {
     var s = '';
 
-    // --- Render order: background circles first, foreground last ---
-
-    // Pulsating energies (smallest, in background)
     var pulse = pulsatingPositions(p);
     var pulseData = { F: data.F, Ya: data.Ya, E: data.E, Kh: data.Kh, Yu: data.Yu, Ts: data.Ts, Sh: data.Sh };
     for (var j = 0; j < pulse.length; j++) {
       s += pulseCircle(pulse[j].x, pulse[j].y, pulseData[pulse[j].key]);
     }
 
-    // Diagonal intermediates (r=14, gold)
     var diagKeys = ["S1", "S2", "T1", "T2", "P1", "P2", "R1", "R2"];
     for (var di = 0; di < diagKeys.length; di++) {
       var dk = diagKeys[di];
-      s += goldCircle(p[dk].x, p[dk].y, data[dk], 14, 10);
+      s += goldCircle(p[dk].x, p[dk].y, data[dk], 16, 12);
     }
 
-    // Center cluster: D, M, I (r=13)
-    s += goldCircle(p.D.x, p.D.y, data.D, 13, 9);
-    s += goldCircle(p.M.x, p.M.y, data.M, 13, 9);
-    s += goldCircle(p.I.x, p.I.y, data.I, 13, 9);
+    s += goldCircle(p.D.x, p.D.y, data.D, 15, 11);
+    s += goldCircle(p.M.x, p.M.y, data.M, 15, 11);
+    s += goldCircle(p.I.x, p.I.y, data.I, 15, 11);
 
-    // Right horizontal small: Z2p (shows Z2), Z1p (shows Z1) — r=14
-    s += goldCircle(p.Z2p.x, p.Z2p.y, data.Z2, 14, 10);
-    s += goldCircle(p.Z1p.x, p.Z1p.y, data.Z1, 14, 10);
+    s += goldCircle(p.Z2p.x, p.Z2p.y, data.Z2, 16, 12);
+    s += goldCircle(p.Z1p.x, p.Z1p.y, data.Z1, 16, 12);
 
-    // Left horizontal: A3 (r=14, gold), A2 (r=16, cyan), A1 (r=17, blue)
-    s += goldCircle(p.A3.x, p.A3.y, data.A3, 14, 10);
-    s += chakraCircle(p.A2.x, p.A2.y, data.A2, 16, "cyan", 11);
-    s += chakraCircle(p.A1.x, p.A1.y, data.A1, 17, "blue", 12);
+    s += goldCircle(p.A3.x, p.A3.y, data.A3, 16, 12);
+    s += chakraCircle(p.A2.x, p.A2.y, data.A2, 20, "cyan", 13);
+    s += chakraCircle(p.A1.x, p.A1.y, data.A1, 22, "blue", 14);
 
-    // Top vertical: B3 (r=18, green), B2 (r=20, cyan), B1 (r=20, blue)
-    s += chakraCircle(p.B3.x, p.B3.y, data.B3, 18, "green", 12);
-    s += chakraCircle(p.B2.x, p.B2.y, data.B2, 20, "cyan", 13);
-    s += chakraCircle(p.B1.x, p.B1.y, data.B1, 20, "blue", 13);
+    s += chakraCircle(p.B3.x, p.B3.y, data.B3, 20, "green", 13);
+    s += chakraCircle(p.B2.x, p.B2.y, data.B2, 22, "cyan", 14);
+    s += chakraCircle(p.B1.x, p.B1.y, data.B1, 22, "blue", 14);
 
-    // Right horizontal: V1 (r=16, blue — mirrors A1), V2 (r=20, orange)
-    s += chakraCircle(p.V1.x, p.V1.y, data.V1, 16, "blue", 11);
-    s += chakraCircle(p.V2.x, p.V2.y, data.V2, 20, "orange", 13);
+    s += chakraCircle(p.V1.x, p.V1.y, data.V1, 20, "blue", 13);
+    s += chakraCircle(p.V2.x, p.V2.y, data.V2, 22, "orange", 14);
 
-    // Bottom vertical: Z (r=20, orange), Zh (r=20, orange)
-    s += chakraCircle(p.Z.x, p.Z.y, data.Z, 20, "orange", 13);
-    s += chakraCircle(p.Zh.x, p.Zh.y, data.Zh, 20, "orange", 13);
+    s += chakraCircle(p.Z.x, p.Z.y, data.Z, 22, "orange", 14);
+    s += chakraCircle(p.Zh.x, p.Zh.y, data.Zh, 22, "orange", 14);
 
-    // Straight square corners: S, T, P, Rp (r=28, gold)
-    s += goldCircle(p.S.x, p.S.y, data.S, 28, 16);
-    s += goldCircle(p.T.x, p.T.y, data.T, 28, 16);
-    s += goldCircle(p.P.x, p.P.y, data.P, 28, 16);
-    s += goldCircle(p.Rp.x, p.Rp.y, data.Rp, 28, 16);
+    s += goldCircle(p.S.x, p.S.y, data.S, 30, 18);
+    s += goldCircle(p.T.x, p.T.y, data.T, 30, 18);
+    s += goldCircle(p.P.x, p.P.y, data.P, 30, 18);
+    s += goldCircle(p.Rp.x, p.Rp.y, data.Rp, 30, 18);
 
-    // Diamond corners: A (r=36, purple), B (r=36, purple), V (r=36, red), G (r=36, red)
-    s += chakraCircle(p.A.x, p.A.y, data.A, 36, "purple", 22);
-    s += chakraCircle(p.B.x, p.B.y, data.B, 36, "purple", 22);
-    s += chakraCircle(p.V.x, p.V.y, data.V, 36, "red", 22);
-    s += chakraCircle(p.G.x, p.G.y, data.G, 36, "red", 22);
+    s += chakraCircle(p.A.x, p.A.y, data.A, 38, "purple", 24);
+    s += chakraCircle(p.B.x, p.B.y, data.B, 38, "purple", 24);
+    s += chakraCircle(p.V.x, p.V.y, data.V, 38, "red", 24);
+    s += chakraCircle(p.G.x, p.G.y, data.G, 38, "red", 24);
 
-    // Center K (r=40, yellow — bright glow, rendered last / on top)
-    s += chakraCircle(p.K.x, p.K.y, data.K, 40, "yellow", 24);
+    s += chakraCircle(p.K.x, p.K.y, data.K, 42, "yellow", 26);
 
     return s;
   }
 
-  // ── Age labels ──
   function svgLabels(p) {
     var s = '';
-    var st = 'fill="#c9a96a" font-family="\'Inter\',sans-serif" font-weight="400" opacity="0.6"';
+    var st = 'fill="#c9a96a" font-family="\'Inter\',sans-serif" font-weight="400" opacity="0.55"';
 
-    // 8 main labels at corners: positioned outside circles
-    // [position, label, text-anchor, dx, dy]
     var mainLabels = [
-      [p.A, "0", "end", -44, 5],
-      [p.S, "10", "end", -34, -5],
-      [p.B, "20", "middle", 0, -44],
-      [p.T, "30", "start", 34, -5],
-      [p.V, "40", "start", 44, 5],
-      [p.P, "50", "start", 34, 18],
-      [p.G, "60", "middle", 0, 48],
-      [p.Rp, "70", "end", -34, 18]
+      [p.A, "0", "end", -46, 5],
+      [p.S, "10", "end", -36, -8],
+      [p.B, "20", "middle", 0, -46],
+      [p.T, "30", "start", 36, -8],
+      [p.V, "40", "start", 46, 5],
+      [p.P, "50", "start", 36, 20],
+      [p.G, "60", "middle", 0, 50],
+      [p.Rp, "70", "end", -36, 20]
     ];
     for (var i = 0; i < mainLabels.length; i++) {
       var ml = mainLabels[i];
       s += '<text x="' + (ml[0].x + ml[3]) + '" y="' + (ml[0].y + ml[4]) + '" text-anchor="' + ml[2] + '" font-size="13" ' + st + '>' + ml[1] + '</text>';
     }
 
-    // 8 midpoint labels at octagon edge midpoints
-    // Angles for midpoints between octagon vertices (measured from center)
     var midAngles = [157.5, 112.5, 67.5, 22.5, 337.5, 292.5, 247.5, 202.5];
     var midLabels = ["5", "15", "25", "35", "45", "55", "65", "75"];
-    var midR = R + 30;
+    var midR = R + 32;
     for (var k = 0; k < 8; k++) {
       var angle = midAngles[k] * Math.PI / 180;
       var mx = CX + midR * Math.cos(angle);
       var my = CY - midR * Math.sin(angle);
-      s += '<text x="' + mx + '" y="' + my + '" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="300" opacity="0.35" ' + st + '>' + midLabels[k] + '</text>';
+      s += '<text x="' + mx + '" y="' + my + '" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="300" opacity="0.30" ' + st + '>' + midLabels[k] + '</text>';
     }
 
     return s;
   }
 
-  // ── Decorative symbols ──
   function svgDecorations() {
     var s = '';
-    // "$" symbol at (640, 555)
-    s += '<text x="640" y="555" text-anchor="middle" fill="#c9a96a" font-family="serif" font-size="20" opacity="0.3">$</text>';
-    // "♡" symbol between Zh area
-    s += '<text x="515" y="700" text-anchor="middle" fill="#c9a96a" font-size="18" opacity="0.3">♡</text>';
+    s += '<text x="660" y="595" text-anchor="middle" fill="#c9a96a" font-family="serif" font-size="20" opacity="0.25">$</text>';
+    s += '<text x="530" y="730" text-anchor="middle" fill="#c9a96a" font-size="18" opacity="0.25">♡</text>';
     return s;
   }
 
-  // ── Main render ──
   function renderMatrix(data) {
     var svg = document.getElementById("matrixSvg");
     var p = getPositions();
 
-    // Rendering order: background → lines → circles → labels → decorations
     var content = '';
     content += svgDefs();
     content += svgBackground();
@@ -404,7 +352,6 @@
     svg.innerHTML = content;
   }
 
-  // ── Purpose section update ──
   function updatePurpose(d) {
     document.getElementById("skyVal").textContent = d.sky;
     document.getElementById("earthVal").textContent = d.earth;
@@ -415,7 +362,6 @@
     document.getElementById("z3Val").textContent = d.Z3;
   }
 
-  // ── Validation ──
   function validate(day, month, year) {
     if (!day || !month || !year) return "Please enter your full date of birth.";
     if (day < 1 || day > 31) return "Day must be between 1 and 31.";
@@ -426,7 +372,6 @@
     return null;
   }
 
-  // ── Form handling ──
   var gender = "female";
 
   document.addEventListener("DOMContentLoaded", function () {
