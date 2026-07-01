@@ -56,20 +56,20 @@
       A: A, B: B, V: V, G: G, K: K,
       S: S, T: T, P: P, Rp: Rp,
 
-      // Left horizontal
-      A1: { x: 183, y: 500 },
-      A2: { x: 252, y: 500 },
-      A3: { x: 383, y: 500 },
+      // Left horizontal — from reference app CSS
+      A1: { x: 192, y: 500 },
+      A2: { x: 243, y: 500 },
+      A3: { x: 372, y: 500 },
 
-      // Top vertical — even spacing between chakra circles
+      // Top vertical
       B1: { x: 500, y: 200 },
       B2: { x: 500, y: 290 },
-      B3: { x: 500, y: 393 },
+      B3: { x: 500, y: 400 },
 
-      // Right horizontal
-      Z2p: { x: 565, y: 500 },
-      Z1p: { x: 618, y: 500 },
-      V2: { x: 685, y: 500 },
+      // Right horizontal — from reference, only 2 intermediates + V2 + V1
+      Z2p: { x: 560, y: 500 },
+      Z1p: { x: 616, y: 500 },
+      V2: { x: 736, y: 500 },
       V1: { x: 808, y: 500 },
 
       // Diagonals — 21% and 38% from corner
@@ -82,14 +82,15 @@
       R1: lerpPt(Rp, K, 0.21),
       R2: lerpPt(Rp, K, 0.38),
 
-      // Bottom vertical — Zh/Z closer to center cluster
+      // Bottom vertical
       Zh: { x: 500, y: 660 },
-      Z: { x: 500, y: 705 },
+      Z: { x: 500, y: 710 },
 
-      // Center cluster — nearly on vertical center line
-      D: { x: 512, y: 524 },
-      M: { x: 506, y: 548 },
-      I: { x: 502, y: 574 }
+      // Center cluster — on CURVED path from horizontal-right toward vertical-down
+      // D is most to the right (near horizontal), I is most vertical, M at 45 degrees
+      D: { x: 530, y: 512 },
+      M: { x: 536, y: 538 },
+      I: { x: 524, y: 568 }
     };
   }
 
@@ -235,11 +236,13 @@
     s += ln(p.T2.x, p.T2.y, p.P2.x, p.P2.y, 0.15, 1);
     s += ln(p.P2.x, p.P2.y, p.R2.x, p.R2.y, 0.15, 1);
     s += ln(p.R2.x, p.R2.y, p.S2.x, p.S2.y, 0.15, 1);
-    // Center cluster connections: opacity 0.12, width 0.6
-    s += ln(p.D.x, p.D.y, p.M.x, p.M.y, 0.12, 0.6);
-    s += ln(p.M.x, p.M.y, p.I.x, p.I.y, 0.12, 0.6);
-    s += ln(p.M.x, p.M.y, p.Zh.x, p.Zh.y, 0.12, 0.6);
-    s += ln(p.Zh.x, p.Zh.y, p.V2.x, p.V2.y, 0.12, 0.6);
+    // Center cluster diagonal curve and connections
+    s += ln(p.D.x, p.D.y, p.M.x, p.M.y, 0.15, 0.8);
+    s += ln(p.M.x, p.M.y, p.I.x, p.I.y, 0.15, 0.8);
+    s += ln(p.I.x, p.I.y, p.Zh.x, p.Zh.y, 0.12, 0.7);
+    s += ln(p.M.x, p.M.y, p.Zh.x, p.Zh.y, 0.10, 0.5);
+    s += ln(p.D.x, p.D.y, p.V2.x, p.V2.y, 0.10, 0.5);
+    s += ln(p.M.x, p.M.y, p.V2.x, p.V2.y, 0.08, 0.5);
     return s;
   }
 
