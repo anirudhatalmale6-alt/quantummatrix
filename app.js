@@ -61,35 +61,35 @@
       A2: { x: 244, y: 500 },
       A3: { x: 374, y: 500 },
 
-      // Top vertical (x=500)
-      B1: { x: 500, y: 200 },
-      B2: { x: 500, y: 292 },
-      B3: { x: 500, y: 376 },
+      // Top vertical (x=500) — from color detection: 31%, 42%, 74% from B
+      B1: { x: 500, y: 224 },
+      B2: { x: 500, y: 268 },
+      B3: { x: 500, y: 396 },
 
       // Right horizontal (y=500)
-      Z2p: { x: 556, y: 500 },
-      Z1p: { x: 608, y: 500 },
-      V2: { x: 664, y: 500 },
-      V1: { x: 780, y: 500 },
+      Z2p: { x: 560, y: 500 },
+      Z1p: { x: 612, y: 500 },
+      V2: { x: 678, y: 500 },
+      V1: { x: 792, y: 500 },
 
       // Diagonals (lerp from corner toward center K)
-      S1: lerpPt(S, K, 0.28),
-      S2: lerpPt(S, K, 0.47),
-      T1: lerpPt(T, K, 0.30),
+      S1: lerpPt(S, K, 0.31),
+      S2: lerpPt(S, K, 0.52),
+      T1: lerpPt(T, K, 0.31),
       T2: lerpPt(T, K, 0.52),
-      P1: lerpPt(P, K, 0.30),
-      P2: lerpPt(P, K, 0.55),
-      R1: lerpPt(Rp, K, 0.28),
-      R2: lerpPt(Rp, K, 0.50),
+      P1: lerpPt(P, K, 0.31),
+      P2: lerpPt(P, K, 0.52),
+      R1: lerpPt(Rp, K, 0.31),
+      R2: lerpPt(Rp, K, 0.52),
 
-      // Bottom vertical (x=500)
-      Zh: { x: 500, y: 660 },
-      Z: { x: 500, y: 712 },
+      // Bottom vertical (x=500) — from color detection: 55%, 67% from K
+      Zh: { x: 500, y: 720 },
+      Z: { x: 500, y: 768 },
 
       // Center cluster (very tight, nearly touching)
-      D: { x: 522, y: 522 },
-      M: { x: 513, y: 544 },
-      I: { x: 504, y: 564 }
+      D: { x: 526, y: 525 },
+      M: { x: 517, y: 549 },
+      I: { x: 507, y: 576 }
     };
   }
 
