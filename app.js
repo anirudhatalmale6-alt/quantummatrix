@@ -52,22 +52,22 @@
       A:{x:ax,y:ay},B:{x:bx,y:by},V:{x:vx,y:vy},G:{x:gx,y:gy},
       S:{x:sx,y:sy},T:{x:tx,y:ty},P:{x:px,y:py},Rp:{x:rx,y:ry},
       K:{x:CX,y:CY},
-      // Left horiz: clustered near A
-      A1:{x:lerp(ax,CX,0.21),y:ay}, A2:{x:lerp(ax,CX,0.38),y:ay}, A3:{x:lerp(ax,CX,0.69),y:ay},
-      // Top vert: clustered near B
-      B1:{x:bx,y:lerp(by,CY,0.25)}, B2:{x:bx,y:lerp(by,CY,0.46)}, B3:{x:bx,y:lerp(by,CY,0.71)},
-      // Right horiz: K -> Z2p -> Z1p -> V2 -> V1 -> V
-      Z2p:{x:lerp(CX,vx,0.15),y:CY}, Z1p:{x:lerp(CX,vx,0.31),y:CY},
-      V2:{x:lerp(CX,vx,0.47),y:CY}, V1:{x:lerp(CX,vx,0.70),y:CY},
-      // Diagonals ~30% and ~55%
-      S1:{x:lerp(sx,CX,0.30),y:lerp(sy,CY,0.30)}, S2:{x:lerp(sx,CX,0.55),y:lerp(sy,CY,0.55)},
-      T1:{x:lerp(tx,CX,0.30),y:lerp(ty,CY,0.30)}, T2:{x:lerp(tx,CX,0.58),y:lerp(ty,CY,0.58)},
-      P1:{x:lerp(px,CX,0.30),y:lerp(py,CY,0.30)}, P2:{x:lerp(px,CX,0.55),y:lerp(py,CY,0.55)},
-      R1:{x:lerp(rx,CX,0.28),y:lerp(ry,CY,0.28)}, R2:{x:lerp(rx,CX,0.52),y:lerp(ry,CY,0.52)},
-      // Bottom vert: tight cluster then Zh, Z
-      Zh:{x:gx,y:lerp(CY,gy,0.46)}, Z:{x:gx,y:lerp(CY,gy,0.64)},
-      // Center cluster - TIGHT, on the diagonal K->P offset
-      D:{x:CX+38,y:CY+28}, M:{x:CX+28,y:CY+58}, I:{x:CX+12,y:CY+85}
+      // Left horiz (from A: 26%, 43%, 70%)
+      A1:{x:lerp(ax,CX,0.26),y:ay}, A2:{x:lerp(ax,CX,0.43),y:ay}, A3:{x:lerp(ax,CX,0.70),y:ay},
+      // Top vert (from B: 24%, 43%, 66%)
+      B1:{x:bx,y:lerp(by,CY,0.24)}, B2:{x:bx,y:lerp(by,CY,0.43)}, B3:{x:bx,y:lerp(by,CY,0.66)},
+      // Right horiz (from K: 15%, 27%, 40%, 66%)
+      Z2p:{x:lerp(CX,vx,0.15),y:CY}, Z1p:{x:lerp(CX,vx,0.27),y:CY},
+      V2:{x:lerp(CX,vx,0.40),y:CY}, V1:{x:lerp(CX,vx,0.66),y:CY},
+      // Diagonals (32% and 52% from corner)
+      S1:{x:lerp(sx,CX,0.32),y:lerp(sy,CY,0.32)}, S2:{x:lerp(sx,CX,0.52),y:lerp(sy,CY,0.52)},
+      T1:{x:lerp(tx,CX,0.32),y:lerp(ty,CY,0.32)}, T2:{x:lerp(tx,CX,0.52),y:lerp(ty,CY,0.52)},
+      P1:{x:lerp(px,CX,0.32),y:lerp(py,CY,0.32)}, P2:{x:lerp(px,CX,0.52),y:lerp(py,CY,0.52)},
+      R1:{x:lerp(rx,CX,0.32),y:lerp(ry,CY,0.32)}, R2:{x:lerp(rx,CX,0.52),y:lerp(ry,CY,0.52)},
+      // Bottom vert (from K: 40%, 54%)
+      Zh:{x:gx,y:lerp(CY,gy,0.40)}, Z:{x:gx,y:lerp(CY,gy,0.54)},
+      // Center cluster - VERY tight column, barely right of vertical
+      D:{x:CX+16,y:CY+22}, M:{x:CX+8,y:CY+44}, I:{x:CX+4,y:CY+66}
     };
   }
 
@@ -141,40 +141,40 @@
   function svgPoints(d, p) {
     var s = "";
     // Center K - yellow
-    s += cc(p.K.x,p.K.y,d.K,40,CLR.yellow,2.5,26,"yellow");
+    s += cc(p.K.x,p.K.y,d.K,36,CLR.yellow,2.5,24,"yellow");
     // Diamond corners
-    s += cc(p.A.x,p.A.y,d.A,36,CLR.purple,2,24,"purple");
-    s += cc(p.B.x,p.B.y,d.B,36,CLR.purple,2,24,"purple");
-    s += cc(p.V.x,p.V.y,d.V,36,CLR.red,2,24,"red");
-    s += cc(p.G.x,p.G.y,d.G,36,CLR.red,2,24,"red");
-    // Straight square corners - dark with white text
-    s += gc(p.S.x,p.S.y,d.S,28,2,18);
-    s += gc(p.T.x,p.T.y,d.T,28,2,18);
-    s += gc(p.P.x,p.P.y,d.P,28,2,18);
-    s += gc(p.Rp.x,p.Rp.y,d.Rp,28,2,18);
-    // Left horizontal intermediates - blue, cyan, green
-    s += cc(p.A1.x,p.A1.y,d.A1,17,CLR.blue,1.5,12,"blue");
-    s += cc(p.A2.x,p.A2.y,d.A2,16,CLR.cyan,1.5,12,"cyan");
-    s += gc(p.A3.x,p.A3.y,d.A3,15,1.2,11);
-    // Top vertical intermediates - blue, cyan, green
-    s += cc(p.B1.x,p.B1.y,d.B1,19,CLR.blue,1.5,13,"blue");
-    s += cc(p.B2.x,p.B2.y,d.B2,19,CLR.cyan,1.5,13,"cyan");
-    s += cc(p.B3.x,p.B3.y,d.B3,18,CLR.green,1.5,13,"green");
-    // Right horizontal: Z2p, Z1p plain; V2 orange; V1 plain
-    s += gc(p.Z2p.x,p.Z2p.y,d.Z2,15,1,11);
-    s += gc(p.Z1p.x,p.Z1p.y,d.Z1,15,1,11);
-    s += cc(p.V2.x,p.V2.y,d.V2,20,CLR.orange,1.5,14,"orange");
-    s += gc(p.V1.x,p.V1.y,d.V1,16,1.2,12);
-    // Diagonal intermediates - all plain gold
+    s += cc(p.A.x,p.A.y,d.A,32,CLR.purple,2,22,"purple");
+    s += cc(p.B.x,p.B.y,d.B,32,CLR.purple,2,22,"purple");
+    s += cc(p.V.x,p.V.y,d.V,32,CLR.red,2,22,"red");
+    s += cc(p.G.x,p.G.y,d.G,32,CLR.red,2,22,"red");
+    // Straight square corners
+    s += gc(p.S.x,p.S.y,d.S,25,1.8,16);
+    s += gc(p.T.x,p.T.y,d.T,25,1.8,16);
+    s += gc(p.P.x,p.P.y,d.P,25,1.8,16);
+    s += gc(p.Rp.x,p.Rp.y,d.Rp,25,1.8,16);
+    // Left horizontal - blue, cyan
+    s += cc(p.A1.x,p.A1.y,d.A1,15,CLR.blue,1.5,11,"blue");
+    s += cc(p.A2.x,p.A2.y,d.A2,14,CLR.cyan,1.5,10,"cyan");
+    s += gc(p.A3.x,p.A3.y,d.A3,13,1,10);
+    // Top vertical - blue, cyan, green
+    s += cc(p.B1.x,p.B1.y,d.B1,16,CLR.blue,1.5,12,"blue");
+    s += cc(p.B2.x,p.B2.y,d.B2,16,CLR.cyan,1.5,12,"cyan");
+    s += cc(p.B3.x,p.B3.y,d.B3,15,CLR.green,1.5,11,"green");
+    // Right horizontal
+    s += gc(p.Z2p.x,p.Z2p.y,d.Z2,13,1,10);
+    s += gc(p.Z1p.x,p.Z1p.y,d.Z1,13,1,10);
+    s += cc(p.V2.x,p.V2.y,d.V2,17,CLR.orange,1.5,12,"orange");
+    s += gc(p.V1.x,p.V1.y,d.V1,14,1,10);
+    // Diagonal intermediates
     var diags=[["S1","S1"],["S2","S2"],["T1","T1"],["T2","T2"],["P1","P1"],["P2","P2"],["R1","R1"],["R2","R2"]];
-    for(var i=0;i<diags.length;i++) {var pp=p[diags[i][0]];s+=gc(pp.x,pp.y,d[diags[i][1]],15,1,11);}
-    // Bottom vertical: Zh orange, Z orange
-    s += cc(p.Zh.x,p.Zh.y,d.Zh,21,CLR.orange,1.5,14,"orange");
-    s += cc(p.Z.x,p.Z.y,d.Z,21,CLR.orange,1.5,14,"orange");
-    // Center cluster - tight, plain
-    s += gc(p.D.x,p.D.y,d.D,14,1,10);
-    s += gc(p.M.x,p.M.y,d.M,14,1,10);
-    s += gc(p.I.x,p.I.y,d.I,14,1,10);
+    for(var i=0;i<diags.length;i++){var pp=p[diags[i][0]];s+=gc(pp.x,pp.y,d[diags[i][1]],13,1,10);}
+    // Bottom vertical: Zh, Z orange
+    s += cc(p.Zh.x,p.Zh.y,d.Zh,18,CLR.orange,1.5,13,"orange");
+    s += cc(p.Z.x,p.Z.y,d.Z,18,CLR.orange,1.5,13,"orange");
+    // Center cluster - VERY tight, almost touching
+    s += gc(p.D.x,p.D.y,d.D,12,0.8,9);
+    s += gc(p.M.x,p.M.y,d.M,12,0.8,9);
+    s += gc(p.I.x,p.I.y,d.I,12,0.8,9);
     // Pulsating energies
     var pulse=pulsatingPositions();
     var pd={F:d.F,Ya:d.Ya,E:d.E,Kh:d.Kh,Yu:d.Yu,Ts:d.Ts,Sh:d.Sh};
