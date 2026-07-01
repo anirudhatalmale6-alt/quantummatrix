@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>QuantumMatrix — Matrix of Destiny</title>
+  <meta name="description" content="Discover your Matrix of Destiny. Enter your date of birth to reveal your personal energy map.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◇</text></svg>">
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="logo">
+        <span class="logo-text">Quantum</span><span class="logo-accent">Matrix</span>
+      </div>
+      <p class="tagline">Matrix of Destiny</p>
+    </header>
+
+    <main class="main">
+      <section class="form-section" id="formSection">
+        <div class="form-card">
+          <h2 class="form-title">Discover Your Matrix</h2>
+
+          <div class="form-group">
+            <label for="nameInput">Full Name <span class="optional">(optional)</span></label>
+            <input type="text" id="nameInput" placeholder="Enter your name" autocomplete="name">
+          </div>
+
+          <div class="form-group">
+            <label>Date of Birth</label>
+            <div class="dob-row">
+              <div class="dob-field">
+                <input type="number" id="dayInput" min="1" max="31" placeholder="DD" inputmode="numeric">
+                <span class="dob-label">Day</span>
+              </div>
+              <span class="dob-sep">/</span>
+              <div class="dob-field">
+                <input type="number" id="monthInput" min="1" max="12" placeholder="MM" inputmode="numeric">
+                <span class="dob-label">Month</span>
+              </div>
+              <span class="dob-sep">/</span>
+              <div class="dob-field dob-year">
+                <input type="number" id="yearInput" min="1900" max="2030" placeholder="YYYY" inputmode="numeric">
+                <span class="dob-label">Year</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Sex</label>
+            <div class="gender-toggle">
+              <button type="button" class="gender-btn active" data-gender="female" id="femaleBtn">Female</button>
+              <button type="button" class="gender-btn" data-gender="male" id="maleBtn">Male</button>
+            </div>
+          </div>
+
+          <div class="error-msg" id="errorMsg"></div>
+
+          <button type="button" class="calculate-btn" id="calculateBtn">
+            Calculate Matrix
+          </button>
+        </div>
+      </section>
+
+      <section class="result-section" id="resultSection" style="display:none">
+        <div class="result-header">
+          <h2 id="resultName"></h2>
+          <p id="resultDob"></p>
+        </div>
+
+        <div class="matrix-container">
+          <svg id="matrixSvg" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+
+        <div class="purpose-section" id="purposeSection">
+          <h3 class="purpose-title">Purpose</h3>
+          <div class="purpose-cards">
+            <div class="purpose-card">
+              <div class="purpose-label">Personal</div>
+              <div class="purpose-detail">
+                <span>Sky: <strong id="skyVal"></strong></span>
+                <span>Earth: <strong id="earthVal"></strong></span>
+              </div>
+              <div class="purpose-value" id="z1Val"></div>
+            </div>
+            <div class="purpose-card">
+              <div class="purpose-label">Social</div>
+              <div class="purpose-detail">
+                <span>M: <strong id="mPurpVal"></strong></span>
+                <span>F: <strong id="zhPurpVal"></strong></span>
+              </div>
+              <div class="purpose-value" id="z2Val"></div>
+            </div>
+            <div class="purpose-card">
+              <div class="purpose-label">Spiritual</div>
+              <div class="purpose-detail">&nbsp;</div>
+              <div class="purpose-value" id="z3Val"></div>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="recalculate-btn" id="recalculateBtn">
+          Calculate Again
+        </button>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; QuantumMatrix</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
