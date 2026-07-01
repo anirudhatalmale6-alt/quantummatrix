@@ -264,8 +264,9 @@ body {
 /* --- Result --- */
 .result-section {
   width: 100%;
-  max-width: 700px;
-  margin-top: 24px;
+  max-width: 800px;
+  margin-top: 8px;
+  padding: 0 4px;
 }
 
 .result-section.fade-in {
@@ -285,30 +286,30 @@ body {
 
 .result-header {
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 8px;
 }
 
 .result-header h2 {
   font-family: var(--font-heading);
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: 400;
   color: var(--gold-light);
   letter-spacing: 0.04em;
 }
 
 .result-header p {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-dim);
-  margin-top: 4px;
+  margin-top: 2px;
   letter-spacing: 0.06em;
 }
 
 /* --- Matrix SVG --- */
 .matrix-container {
   width: 100%;
-  max-width: 650px;
+  max-width: 750px;
   margin: 0 auto;
-  padding: 8px;
+  padding: 0;
 }
 
 .matrix-container svg {
@@ -409,15 +410,20 @@ body {
 /* --- Responsive --- */
 @media (max-width: 600px) {
   .header {
-    padding: 36px 16px 12px;
+    padding: 24px 16px 8px;
   }
 
   .logo {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
   }
 
   .tagline {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
+    margin-top: 4px;
+  }
+
+  .main {
+    padding: 0 4px 32px;
   }
 
   .form-card {
@@ -429,27 +435,68 @@ body {
     font-size: 1.25rem;
   }
 
-  .purpose-cards {
-    grid-template-columns: 1fr;
-    gap: 10px;
+  .result-section {
+    margin-top: 4px;
+    padding: 0;
   }
 
-  .purpose-card {
-    padding: 16px 12px;
+  .result-header {
+    margin-bottom: 4px;
   }
 
   .result-header h2 {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
+  }
+
+  .result-header p {
+    font-size: 0.75rem;
   }
 
   .matrix-container {
+    width: 100%;
+    max-width: 100%;
     padding: 0;
+    margin: 0 -4px;
+  }
+
+  .purpose-section {
+    margin-top: 24px;
+    padding: 0 12px;
+  }
+
+  .purpose-cards {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .purpose-card {
+    padding: 12px 8px;
+  }
+
+  .purpose-label {
+    font-size: 0.6rem;
+  }
+
+  .purpose-value {
+    font-size: 1.5rem;
+  }
+
+  .purpose-detail {
+    font-size: 0.7rem;
+  }
+
+  .recalculate-btn {
+    margin-top: 24px;
   }
 }
 
 @media (max-width: 380px) {
   .logo {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+  }
+
+  .header {
+    padding: 16px 12px 6px;
   }
 
   .form-card {
@@ -458,5 +505,9 @@ body {
 
   .dob-row {
     gap: 4px;
+  }
+
+  .purpose-cards {
+    grid-template-columns: 1fr;
   }
 }
