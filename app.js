@@ -133,14 +133,6 @@
     s += '<stop offset="100%" stop-color="#b7950b" stop-opacity="0"/>';
     s += '</radialGradient>';
 
-    // Body silhouette fade mask
-    s += '<radialGradient id="silhouetteFade" cx="50%" cy="45%" r="55%">';
-    s += '<stop offset="0%" stop-color="white" stop-opacity="1"/>';
-    s += '<stop offset="70%" stop-color="white" stop-opacity="0.8"/>';
-    s += '<stop offset="100%" stop-color="white" stop-opacity="0"/>';
-    s += '</radialGradient>';
-    s += '<mask id="silhouetteMask"><rect width="1000" height="1000" fill="url(#silhouetteFade)"/></mask>';
-
     var colorKeys = ["purple", "blue", "cyan", "green", "yellow", "orange", "red"];
     for (var i = 0; i < colorKeys.length; i++) {
       var name = colorKeys[i];
@@ -154,23 +146,28 @@
       s += '<stop offset="100%" stop-color="' + lighten(cc.base, -0.2) + '"/>';
       s += '</radialGradient>';
 
-      // Outer halo glow - very soft, wide spread
+      // Outer halo glow - intense light emission
       s += '<radialGradient id="halo_' + name + '" cx="50%" cy="50%" r="50%">';
-      s += '<stop offset="0%" stop-color="' + cc.base + '" stop-opacity="0.6"/>';
-      s += '<stop offset="40%" stop-color="' + cc.base + '" stop-opacity="0.25"/>';
-      s += '<stop offset="70%" stop-color="' + cc.base + '" stop-opacity="0.08"/>';
+      s += '<stop offset="0%" stop-color="' + cc.mid + '" stop-opacity="0.7"/>';
+      s += '<stop offset="25%" stop-color="' + cc.base + '" stop-opacity="0.4"/>';
+      s += '<stop offset="55%" stop-color="' + cc.base + '" stop-opacity="0.15"/>';
+      s += '<stop offset="80%" stop-color="' + cc.base + '" stop-opacity="0.04"/>';
       s += '<stop offset="100%" stop-color="' + cc.base + '" stop-opacity="0"/>';
       s += '</radialGradient>';
 
-      // Inner glow filter - tight, bright
-      s += '<filter id="glow_' + name + '" x="-100%" y="-100%" width="300%" height="300%">';
-      s += '<feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur1"/>';
-      s += '<feFlood flood-color="' + cc.mid + '" flood-opacity="0.7"/>';
+      // Multi-layer glow filter - dramatic light emission
+      s += '<filter id="glow_' + name + '" x="-150%" y="-150%" width="400%" height="400%">';
+      s += '<feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur1"/>';
+      s += '<feFlood flood-color="' + cc.light + '" flood-opacity="0.8"/>';
       s += '<feComposite in2="blur1" operator="in" result="glow1"/>';
-      s += '<feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur2"/>';
-      s += '<feFlood flood-color="' + cc.base + '" flood-opacity="0.3"/>';
+      s += '<feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur2"/>';
+      s += '<feFlood flood-color="' + cc.mid + '" flood-opacity="0.5"/>';
       s += '<feComposite in2="blur2" operator="in" result="glow2"/>';
+      s += '<feGaussianBlur in="SourceGraphic" stdDeviation="16" result="blur3"/>';
+      s += '<feFlood flood-color="' + cc.base + '" flood-opacity="0.25"/>';
+      s += '<feComposite in2="blur3" operator="in" result="glow3"/>';
       s += '<feMerge>';
+      s += '<feMergeNode in="glow3"/>';
       s += '<feMergeNode in="glow2"/>';
       s += '<feMergeNode in="glow1"/>';
       s += '<feMergeNode in="SourceGraphic"/>';
@@ -178,12 +175,15 @@
       s += '</filter>';
     }
 
-    // Gold glow filter - enhanced
-    s += '<filter id="glow_gold" x="-80%" y="-80%" width="260%" height="260%">';
-    s += '<feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>';
-    s += '<feFlood flood-color="' + GOLD + '" flood-opacity="0.4"/>';
-    s += '<feComposite in2="blur" operator="in" result="colorBlur"/>';
-    s += '<feMerge><feMergeNode in="colorBlur"/><feMergeNode in="SourceGraphic"/></feMerge>';
+    // Gold glow filter - enhanced with double layer
+    s += '<filter id="glow_gold" x="-100%" y="-100%" width="300%" height="300%">';
+    s += '<feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur1"/>';
+    s += '<feFlood flood-color="#e8d5a3" flood-opacity="0.5"/>';
+    s += '<feComposite in2="blur1" operator="in" result="glow1"/>';
+    s += '<feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur2"/>';
+    s += '<feFlood flood-color="' + GOLD + '" flood-opacity="0.25"/>';
+    s += '<feComposite in2="blur2" operator="in" result="glow2"/>';
+    s += '<feMerge><feMergeNode in="glow2"/><feMergeNode in="glow1"/><feMergeNode in="SourceGraphic"/></feMerge>';
     s += '</filter>';
 
     // Gold fill gradient for gold circles
@@ -219,24 +219,15 @@
     return s;
   }
 
-  function svgBackground(hasSilhouette) {
+  function svgBackground() {
     var s = '';
 
-    // Body silhouette
-    if (hasSilhouette) {
-      var imgW = 500, imgH = 780;
-      var imgX = CX - imgW / 2, imgY = CY - imgH * 0.48;
-      s += '<g mask="url(#silhouetteMask)" opacity="0.07">';
-      s += '<image href="avatar_demo.svg" x="' + imgX + '" y="' + imgY + '" width="' + imgW + '" height="' + imgH + '" preserveAspectRatio="xMidYMid meet"/>';
-      s += '</g>';
-    }
-
     // Outer ring - solid, prominent
-    s += '<circle cx="' + CX + '" cy="' + CY + '" r="' + (R + 18) + '" fill="none" stroke="url(#outerRing)" stroke-width="2"/>';
-    s += '<circle cx="' + CX + '" cy="' + CY + '" r="' + (R + 28) + '" fill="none" stroke="#c9a96a" stroke-opacity="0.15" stroke-width="0.8" stroke-dasharray="4 6"/>';
+    s += '<circle cx="' + CX + '" cy="' + CY + '" r="' + (R + 18) + '" fill="none" stroke="url(#outerRing)" stroke-width="2.5"/>';
+    s += '<circle cx="' + CX + '" cy="' + CY + '" r="' + (R + 30) + '" fill="none" stroke="#c9a96a" stroke-opacity="0.12" stroke-width="0.8" stroke-dasharray="4 6"/>';
 
-    // Center radiating glow - much bigger
-    s += '<circle class="center-glow" cx="' + CX + '" cy="' + CY + '" r="180" fill="url(#centerGlow)"/>';
+    // Center radiating glow - massive
+    s += '<circle class="center-glow" cx="' + CX + '" cy="' + CY + '" r="220" fill="url(#centerGlow)"/>';
 
     return s;
   }
@@ -301,10 +292,13 @@
     var cc = CHAKRA_COLORS[colorName];
     var s = '';
 
-    // Layer 1: Outer halo glow (only for main/large circles)
-    if (isMain || radius >= 28) {
-      var haloR = radius * 2.2;
+    // Layer 1: Outer halo glow - dramatic light emission
+    if (isMain) {
+      var haloR = radius * 2.8;
       s += '<circle class="halo" cx="' + x + '" cy="' + y + '" r="' + haloR + '" fill="url(#halo_' + colorName + ')"/>';
+    } else if (radius >= 24) {
+      var haloR2 = radius * 2.0;
+      s += '<circle class="halo" cx="' + x + '" cy="' + y + '" r="' + haloR2 + '" fill="url(#halo_' + colorName + ')" opacity="0.7"/>';
     }
 
     // Layer 2: Main circle with glow filter
@@ -461,27 +455,19 @@
     return s;
   }
 
-  var hasSilhouette = true;
-
   function renderMatrix(data) {
     var svg = document.getElementById("matrixSvg");
     var p = getPositions();
 
     var content = '';
     content += svgDefs();
-    content += svgBackground(hasSilhouette);
+    content += svgBackground();
     content += svgLines(p);
     content += svgCircles(data, p);
     content += svgLabels(p);
     content += svgDecorations();
 
     svg.innerHTML = content;
-
-    // Check if silhouette actually loaded - if not, it's fine, just visual enhancement
-    var img = svg.querySelector('image');
-    if (img) {
-      img.onerror = function() { hasSilhouette = false; };
-    }
   }
 
   function updatePurpose(d) {

@@ -310,12 +310,33 @@ body {
   max-width: 750px;
   margin: 0 auto;
   padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.matrix-silhouette-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.matrix-silhouette {
+  height: 82%;
+  margin-top: -2%;
+  opacity: 0.07;
+  filter: brightness(1.8) contrast(0.8);
 }
 
 .matrix-container svg {
   width: 100%;
   height: auto;
   display: block;
+  position: relative;
+  z-index: 1;
 }
 
 /* --- Purpose --- */
