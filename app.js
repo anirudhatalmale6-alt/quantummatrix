@@ -179,10 +179,10 @@
     return pts;
   }
 
-  var GOLD = "#c9a96e";
-  var GOLD_LIGHT = "#e8d5a3";
-  var GOLD_DIM = "rgba(201,169,110,0.25)";
-  var DARK_FILL = "#0d0c0a";
+  var GOLD = "#c9a96a";
+  var GOLD_LIGHT = "#d4af37";
+  var GOLD_DIM = "rgba(201,169,106,0.2)";
+  var DARK_FILL = "#161514";
 
   function svgDefs() {
     return `
